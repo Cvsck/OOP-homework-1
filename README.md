@@ -18,3 +18,17 @@ pip install pytest-html
 '''
 poetry install
 '''
+# Запуск тестов с отчетом покрытия и HTML отчетом
+'''
+pytest --cov=src --cov-report=html:htmlcov --html=report.html
+'''
+
+# Создание модуля
+'''
+main
+'''
+# В папке Tests добавлены тесты к модулям
+'''
+test_main.py
+
+'''
