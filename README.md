@@ -13,6 +13,9 @@ pip install mypy
 pip install pytest
 pip install pytest-cov
 pip install pytest-html
+pip install coverage
+start htmlcov/index.html
+
 '''
 # После обновления pyproject.toml, установите все зависимости:
 '''
