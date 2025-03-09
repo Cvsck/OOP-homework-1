@@ -1,13 +1,13 @@
 class Product:
     name: str
     description: str
-    _price: float  # Приватный атрибут
+    __price: float  # Полностью приватный атрибут
     quantity: int
 
     def __init__(self, name: str, description: str, price: float, quantity: int) -> None:
         self.name = name
         self.description = description
-        self._price = price  # Инициализация приватного атрибута
+        self.__price = price  # Инициализация приватного атрибута
         self.quantity = quantity
 
     @classmethod
@@ -30,21 +30,21 @@ class Product:
 
     @property
     def price(self):
-        return self._price
+        return self.__price
 
     @price.setter
     def price(self, value):
         if value <= 0:
             print("Цена не должна быть нулевая или отрицательная")
-        elif value < self._price:
-            confirm = input(f"Цена понижается с {self._price} до {value}. Вы уверены? (y/n): ")
+        elif value < self.__price:
+            confirm = input(f"Цена понижается с {self.__price} до {value}. Вы уверены? (y/n): ")
             if confirm.lower() == "y":
-                self._price = value
+                self.__price = value
                 print(f"Цена изменена на {value}")
             else:
                 print("Изменение цены отменено")
         else:
-            self._price = value
+            self.__price = value
 
 
 class Category:
@@ -64,6 +64,8 @@ class Category:
         Category.product_count += len(self.__products)
 
     def add_product(self, product: Product) -> None:
+        if not isinstance(product, Product):
+            raise TypeError("Можно добавлять только объекты класса Product или его наследников")
         self.__products.append(product)
         Category.product_count += 1
 
