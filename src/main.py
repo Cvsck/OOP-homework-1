@@ -1,87 +1,6 @@
-class Product:
-    name: str
-    description: str
-    __price: float  # Полностью приватный атрибут
-    quantity: int
+from src.product import Product
+from src.category import Category
 
-    def __init__(self, name: str, description: str, price: float, quantity: int) -> None:
-        self.name = name
-        self.description = description
-        self.__price = price  # Инициализация приватного атрибута
-        self.quantity = quantity
-
-    @classmethod
-    def new_product(cls, product_dict: dict, existing_products: list):
-        # Поиск существующего товара по имени
-        for product in existing_products:
-            if product.name == product_dict["name"]:
-                # Обновляем количество товара и выбираем более высокую цену
-                product.quantity += product_dict["quantity"]
-                product.price = max(product.price, max(0, product_dict["price"]))  # Учитываем отрицательную цену
-                return product
-
-        # Создаем новый товар, если такого еще нет
-        return cls(
-            name=product_dict["name"],
-            description=product_dict["description"],
-            price=max(0, product_dict["price"]),  # Устанавливаем цену равной нулю, если она отрицательная
-            quantity=product_dict["quantity"],
-        )
-
-    @property
-    def price(self):
-        return self.__price
-
-    @price.setter
-    def price(self, value):
-        if value <= 0:
-            print("Цена не должна быть нулевая или отрицательная")
-        elif value < self.__price:
-            confirm = input(f"Цена понижается с {self.__price} до {value}. Вы уверены? (y/n): ")
-            if confirm.lower() == "y":
-                self.__price = value
-                print(f"Цена изменена на {value}")
-            else:
-                print("Изменение цены отменено")
-        else:
-            self.__price = value
-
-
-class Category:
-    name: str
-    description: str
-    __products: list  # Приватный атрибут
-    category_count = 0
-    product_count = 0
-
-    def __init__(self, name: str, description: str, products: list = None) -> None:
-        self.name = name
-        self.description = description
-        self.__products = products if products else []
-
-        # Увеличение значения атрибутов класса
-        Category.category_count += 1
-        Category.product_count += len(self.__products)
-
-    def add_product(self, product: Product) -> None:
-        if not isinstance(product, Product):
-            raise TypeError("Можно добавлять только объекты класса Product или его наследников")
-        self.__products.append(product)
-        Category.product_count += 1
-
-    @property
-    def products(self) -> list:
-        return self.__products
-
-    @property
-    def products_as_string(self) -> str:
-        return "\n".join([f"{p.name}, {p.price} руб. Остаток: {p.quantity} шт." for p in self.__products])
-
-    def get_products(self) -> list:
-        return self.__products
-
-
-# Пример использования
 if __name__ == "__main__":
     product1 = Product("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5)
     product2 = Product("Iphone 15", "512GB, Gray space", 210000.0, 8)
@@ -93,10 +12,10 @@ if __name__ == "__main__":
         [product1, product2, product3],
     )
 
-    print(category1.products_as_string)
+    print(category1.products)
     product4 = Product('55" QLED 4K', "Фоновая подсветка", 123000.0, 7)
     category1.add_product(product4)
-    print(category1.products_as_string)
+    print(category1.products)
     print(category1.product_count)
 
     new_product = Product.new_product(
