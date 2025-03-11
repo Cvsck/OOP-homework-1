@@ -1,4 +1,5 @@
 import pytest
+
 from src.category import Category
 from src.product import Product
 
@@ -18,6 +19,7 @@ def first_category():
         products=[product4],
     )
 
+
 # Тесты для проверки создания категории
 def test_category_creation(first_category):
     assert first_category.name == "Телевизоры"
@@ -26,12 +28,14 @@ def test_category_creation(first_category):
     )
     assert first_category.get_products()[0].name == '55" QLED 4K'  # Используем метод get_products()
 
+
 # Тесты для проверки атрибутов категории
 def test_category_attributes(first_category):
     assert isinstance(first_category.name, str)
     assert isinstance(first_category.description, str)
     assert isinstance(first_category.get_products(), list)  # Используем метод get_products()
     assert all(isinstance(product, Product) for product in first_category.get_products())
+
 
 # Тесты для проверки счетчиков категории и продукта
 def test_category_and_product_count(first_category):
