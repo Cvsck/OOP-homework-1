@@ -11,6 +11,12 @@ def first_product():
     )
 
 
+# Фикстура для создания второго продукта
+@pytest.fixture
+def second_product():
+    return Product(name="Iphone 15", description="512GB, Gray space", price=210000, quantity=8)
+
+
 # Тесты для проверки создания продукта
 def test_product_creation(first_product):
     assert first_product.name == "Samsung Galaxy S23 Ultra"
@@ -56,3 +62,8 @@ def test_price_setter_zero(first_product):
 def test_price_setter_lower_confirmed(first_product, confirmation_input):
     first_product.price = 160000  # Новая цена
     assert first_product.price == 160000
+
+
+# Тесты для проверки сложения продуктов
+def test_product_addition(first_product, second_product):
+    assert first_product + second_product == 2580000  # 180000 * 5 + 210000 * 8 = 2580000
