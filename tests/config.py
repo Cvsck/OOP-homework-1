@@ -1,6 +1,7 @@
 import pytest
 
-from src.main import Category, Product
+from src.category import Category
+from src.product import LawnGrass, Product, Smartphone
 
 
 @pytest.fixture
@@ -11,15 +12,37 @@ def first_product():
 
 
 @pytest.fixture
-def first_category():
-    Category.category_count = 0  # Сбросить значение переменной класса перед тестами
-    Category.product_count = 0
+def second_product():
+    return Product(name="Iphone 15", description="512GB, Gray space", price=210000, quantity=8)
 
-    product4 = Product(name='55" QLED 4K', description="Фоновая подсветка", price=123000, quantity=7)
 
-    return Category(
-        name="Телевизоры",
-        description="Современный телевизор, "
-        "который позволяет наслаждаться просмотром, станет вашим другом и помощником",
-        products=[product4],
+@pytest.fixture
+def smartphone():
+    return Smartphone(
+        name="Iphone 15",
+        description="512GB, Gray space",
+        price=210000.0,
+        quantity=8,
+        efficiency=98.2,
+        model="15",
+        memory=512,
+        color="Gray space",
     )
+
+
+@pytest.fixture
+def lawn_grass():
+    return LawnGrass(
+        name="Газонная трава",
+        description="Элитная трава для газона",
+        price=500,
+        quantity=20,
+        country="Россия",
+        germination_period=7,
+        color="Зеленый",
+    )
+
+
+@pytest.fixture
+def category():
+    return Category(name="Смартфоны", description="Высокотехнологичные устройства", products=[])
