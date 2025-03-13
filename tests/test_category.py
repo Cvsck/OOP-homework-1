@@ -3,6 +3,7 @@ import pytest
 from src.category import Category
 from src.product import Product
 
+
 # Фикстура для создания первой категории
 @pytest.fixture
 def first_category():
