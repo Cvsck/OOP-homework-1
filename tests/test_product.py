@@ -1,6 +1,6 @@
 import pytest
 
-from src.product import LawnGrass, Product, Smartphone
+from src.product import BaseProduct, LawnGrass, Product, Smartphone
 
 
 # Тест на проверку создания базового продукта
@@ -59,9 +59,39 @@ def test_smartphone_creation(capsys):
     assert "Создан объект класса Smartphone" in captured.out
 
 
-# Тест на создание газонной травы
-def test_lawn_grass_creation(capsys):
+# Тест на создание газонной травы с проверкой базового класса и миксина
+def test_lawn_grass_creation_with_base_and_mixin(capsys):
     lawn_grass = LawnGrass("Газонная трава", "Описание", 500, 20, "Россия", 7)
+
+    # Проверка атрибутов
     assert lawn_grass.name == "Газонная трава"
+    assert lawn_grass.price == 500
+    assert lawn_grass.quantity == 20
+    assert lawn_grass.country == "Россия"
+    assert lawn_grass.germination_period == 7
+
+    # Проверка наследования от BaseProduct
+    assert isinstance(lawn_grass, BaseProduct)
+
+    # Проверка логирования из InitLoggingMixin
     captured = capsys.readouterr()
     assert "Создан объект класса LawnGrass" in captured.out
+
+
+# Тест на использование миксина InitLoggingMixin
+def test_init_logging_mixin(capsys):
+    # Создаем объект LawnGrass для проверки работы миксина
+    lawn_grass = LawnGrass("Газонная трава", "Описание", 500, 20, "Россия", 7)
+
+    # Проверяем логирование в выводе
+    captured = capsys.readouterr()
+    assert "Создан объект класса LawnGrass" in captured.out
+
+    # Проверяем наличие метода __repr__, добавленного миксином
+    assert hasattr(lawn_grass, "__repr__")
+
+    # Проверяем корректность работы __repr__
+    repr_output = repr(lawn_grass)
+    assert repr_output.startswith("<LawnGrass")
+    assert "name': 'Газонная трава'" in repr_output
+    assert "price': 500" in repr_output
