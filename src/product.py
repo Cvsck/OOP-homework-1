@@ -1,21 +1,20 @@
-class Product:
-    name: str
-    description: str
-    __price: float  # Приватный атрибут
-    quantity: int
+from abc import ABC, abstractmethod
 
-    def __init__(self, name: str, description: str, price: float, quantity: int) -> None:
+
+# Базовый абстрактный класс
+class BaseProduct(ABC):
+    def __init__(self, name: str, description: str, price: float, quantity: int):
         self.name = name
         self.description = description
         self.__price = price
         self.quantity = quantity
 
     @property
-    def price(self):
+    def price(self) -> float:
         return self.__price
 
     @price.setter
-    def price(self, value):
+    def price(self, value: float):
         if value <= 0:
             print("Цена не должна быть нулевая или отрицательная")
         elif value < self.__price:
@@ -28,69 +27,79 @@ class Product:
         else:
             self.__price = value
 
+    @abstractmethod
+    def calculate_total_price(self) -> float:
+        pass
+
+    @abstractmethod
     def __str__(self) -> str:
-        return f"{self.name}, {self.__price} руб. Остаток: {self.quantity} шт."
+        pass
+
+
+# Миксин для логирования создания объектов
+class InitLoggingMixin:
+    def __init__(self, *args, **kwargs):
+        class_name = self.__class__.__name__
+        print(f"Создан объект класса {class_name} с аргументами: {args}, {kwargs}")
+        super().__init__(*args, **kwargs)
+
+    def __repr__(self):
+        return f"<{self.__class__.__name__}({self.__dict__})>"
+
+
+# Класс продуктов с миксином
+class Product(InitLoggingMixin, BaseProduct):
+    def calculate_total_price(self) -> float:
+        return self.price * self.quantity
+
+    def __str__(self) -> str:
+        return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
 
     def __add__(self, other):
         if not isinstance(other, Product):
             raise TypeError("Можно складывать только объекты класса Product")
-        if type(self) != type(other):  # Проверка типов
-            raise TypeError(f"Нельзя складывать объекты разных типов: {type(self).__name__} и {type(other).__name__}")
         return self.price * self.quantity + other.price * other.quantity
 
 
+# Класс смартфонов
 class Smartphone(Product):
-    def __init__(
-        self,
-        name: str,
-        description: str,
-        price: float,
-        quantity: int,
-        efficiency: float,
-        model: str,
-        memory: int,
-        color: str,
-    ) -> None:
-        super().__init__(name, description, price, quantity)
-        self.efficiency = efficiency
+    def __init__(self, name: str, description: str, price: float, quantity: int, model: str, memory: int, color: str):
         self.model = model
         self.memory = memory
         self.color = color
+        super().__init__(name, description, price, quantity)
 
     def __str__(self) -> str:
-        return f"{super().__str__()}, Модель: {self.model}, Цвет: {self.color}, Память: {self.memory} ГБ, Производительность: {self.efficiency}"
+        return f"{super().__str__()}, Модель: {self.model}, Память: {self.memory} ГБ, Цвет: {self.color}"
 
 
+# Класс газонной травы
 class LawnGrass(Product):
     def __init__(
-        self,
-        name: str,
-        description: str,
-        price: float,
-        quantity: int,
-        country: str,
-        germination_period: int,
-        color: str,
-    ) -> None:
-        super().__init__(name, description, price, quantity)
+        self, name: str, description: str, price: float, quantity: int, country: str, germination_period: int
+    ):
         self.country = country
         self.germination_period = germination_period
-        self.color = color
+        super().__init__(name, description, price, quantity)
 
     def __str__(self) -> str:
-        return f"{super().__str__()}, Страна: {self.country}, Период прорастания: {self.germination_period} дней, Цвет: {self.color}"
+        return f"{super().__str__()}, Страна: {self.country}, Период прорастания: {self.germination_period} дней"
 
 
+# Класс для категории продуктов
 class ProductCategory:
     def __init__(self):
         self.products = []
 
     def add_product(self, product):
-        if not isinstance(product, Product):  # Проверка через isinstance
+        if not isinstance(product, Product):
             raise TypeError(
                 f"Можно добавлять только объекты класса Product и его наследников, а не {type(product).__name__}"
             )
         self.products.append(product)
+
+    def get_products(self):
+        return self.products
 
     def __str__(self):
         return "\n".join(str(product) for product in self.products)
