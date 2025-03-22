@@ -1,4 +1,4 @@
-from src.product import Product
+from src.product import Product  # Импортируем Product
 
 
 class Category:
@@ -29,7 +29,7 @@ class Category:
     def get_products(self) -> list:
         return self.__products
 
-    def middle_price(self) -> float:  # Изменение названия метода
+    def middle_price(self) -> float:  # Метод для средней цены
         try:
             if not self.__products:
                 raise ValueError("В категории нет товаров")
