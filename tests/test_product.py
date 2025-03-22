@@ -95,3 +95,9 @@ def test_init_logging_mixin(capsys):
     assert repr_output.startswith("<LawnGrass")
     assert "name': 'Газонная трава'" in repr_output
     assert "price': 500" in repr_output
+
+
+# Тест на попытку создать товар с нулевым количеством (Задание 1)
+def test_product_with_zero_quantity():
+    with pytest.raises(ValueError, match="Товар с нулевым количеством не может быть добавлен"):
+        Product("Test Product", "Описание", 1500.0, 0)

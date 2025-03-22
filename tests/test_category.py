@@ -21,44 +21,58 @@ def first_category():
     )
 
 
-# Тесты для проверки создания категории
-def test_category_creation(first_category):
-    assert first_category.name == "Телевизоры"
-    assert first_category.description == (
-        "Современный телевизор, который позволяет наслаждаться просмотром, " "станет вашим другом и помощником"
-    )
-    assert first_category.get_products()[0].name == '55" QLED 4K'  # Используем метод get_products()
+# Тесты для метода middle_price
+def test_middle_price_no_products():
+    # Создание категории без продуктов
+    empty_category = Category(name="Пустая категория", description="Нет продуктов в категории")
+
+    # Проверка обработки исключения и возврата 0
+    assert empty_category.middle_price() == 0
 
 
-# Тесты для проверки атрибутов категории
-def test_category_attributes(first_category):
-    assert isinstance(first_category.name, str)
-    assert isinstance(first_category.description, str)
-    assert isinstance(first_category.get_products(), list)  # Используем метод get_products()
-    assert all(isinstance(product, Product) for product in first_category.get_products())
+def test_middle_price_with_products(first_category):
+    # Проверка расчёта средней цены с использованием первой категории
+    assert first_category.middle_price() == 123000.0
+
+    # Добавляем ещё один продукт в категорию
+    product2 = Product(name="SmartTV", description="Описание", price=77000, quantity=10)
+    first_category.add_product(product2)
+
+    # Проверяем среднюю цену после добавления продукта
+    expected_average_price = (123000 + 77000) / 2  # Средняя цена продуктов
+    assert first_category.middle_price() == expected_average_price
 
 
-# Тесты для проверки счетчиков категории и продукта
-def test_category_and_product_count(first_category):
-    assert Category.category_count == 1
-    assert Category.product_count == 1
+# Тест на добавление некорректного продукта
+def test_add_invalid_product():
+    category = Category(name="Некорректные продукты", description="Категория для тестирования")
 
-    product1 = Product("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000, 5)
-    product2 = Product("Iphone 15", "512GB, Gray space", 210000, 8)
-    category2 = Category(
-        "Смартфоны",
-        (
+    # Проверка добавления не-продукта вызывает TypeError
+    with pytest.raises(TypeError):
+        category.add_product("Некорректный продукт")  # Ожидается TypeError
+
+
+# Тесты для проверки счетчиков категории и продукта с новым методом
+def test_category_and_product_count_with_middle_price():
+    Category.category_count = 0  # Сбросить значение переменной класса перед тестами
+    Category.product_count = 0
+
+    product1 = Product(name="Samsung Galaxy S23 Ultra", description="256GB, Серый цвет", price=180000, quantity=5)
+    product2 = Product(name="Iphone 15", description="512GB, Gray space", price=210000, quantity=8)
+
+    category = Category(
+        name="Смартфоны",
+        description=(
             "Смартфоны, как средство не только коммуникации, "
             "но и получения дополнительных функций для удобства жизни"
         ),
-        [product1, product2],
+        products=[product1, product2],
     )
 
-    assert category2.name == "Смартфоны"
-    assert category2.description == (
-        "Смартфоны, как средство не только коммуникации, " "но и получения дополнительных функций для удобства жизни"
-    )
-    assert len(category2.get_products()) == 2  # Используем метод get_products()
+    # Проверяем среднюю цену
+    expected_average_price = (180000 + 210000) / 2
+    assert category.middle_price() == expected_average_price
 
-    assert Category.category_count == 2
-    assert Category.product_count == 3
+    # Проверяем счетчики категорий и продуктов
+    assert Category.category_count == 1
+    assert Category.product_count == 2

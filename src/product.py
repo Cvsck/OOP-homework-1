@@ -4,6 +4,8 @@ from abc import ABC, abstractmethod
 # Базовый абстрактный класс
 class BaseProduct(ABC):
     def __init__(self, name: str, description: str, price: float, quantity: int):
+        if quantity == 0:
+            raise ValueError("Товар с нулевым количеством не может быть добавлен")
         self.name = name
         self.description = description
         self.__price = price
@@ -64,6 +66,8 @@ class Product(InitLoggingMixin, BaseProduct):
 # Класс смартфонов
 class Smartphone(Product):
     def __init__(self, name: str, description: str, price: float, quantity: int, model: str, memory: int, color: str):
+        if quantity == 0:
+            raise ValueError("Товар с нулевым количеством не может быть добавлен")
         self.model = model
         self.memory = memory
         self.color = color
@@ -78,6 +82,8 @@ class LawnGrass(Product):
     def __init__(
         self, name: str, description: str, price: float, quantity: int, country: str, germination_period: int
     ):
+        if quantity == 0:
+            raise ValueError("Товар с нулевым количеством не может быть добавлен")
         self.country = country
         self.germination_period = germination_period
         super().__init__(name, description, price, quantity)
