@@ -1,4 +1,4 @@
-from src.product import Product
+from src.product import Product  # Импортируем Product
 
 
 class Category:
@@ -28,6 +28,17 @@ class Category:
 
     def get_products(self) -> list:
         return self.__products
+
+    def middle_price(self) -> float:  # Метод для средней цены
+        try:
+            if not self.__products:
+                raise ValueError("В категории нет товаров")
+            total_price = sum(product.price for product in self.__products)
+            average_price = total_price / len(self.__products)
+            return average_price
+        except ValueError as e:
+            print(e)
+            return 0
 
     def __str__(self) -> str:
         total_quantity = sum(p.quantity for p in self.__products)
